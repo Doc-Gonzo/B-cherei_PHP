@@ -4,7 +4,7 @@
 
     echo '<h2>Willkommen</h2>';
 
-    if(!isset($_COOKIE['logged_in'])) {
+    if(($_COOKIE['logged_in'] == 'false')) {
         echo'
             <p>Bitte loggen Sie sich ein, um fortfahren zu können.</p>
         ';

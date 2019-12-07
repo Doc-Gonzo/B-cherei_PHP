@@ -29,7 +29,7 @@ else {
        <div class="logoutbox">
             <p>$first_name</p>
             <p>$last_name</p>
-            <form action="" method="post">
+            <form action="index.php" method="post">
                 <input name="hidden_logout" type="hidden" value="true">           
                 <input type="submit" value="Ausloggen">
             </form>

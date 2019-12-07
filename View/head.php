@@ -1,4 +1,5 @@
 <?php
+
     require_once "model/global_functions.php";
     echo '
         <html>
@@ -21,10 +22,10 @@
 
     include "model/login.php";
 
-    echo '
-    
+    echo '    
 
     </div>
             </div>
         </div>    <div class="clear"></div>
     ';
+    include 'model/menu.php';

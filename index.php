@@ -10,7 +10,6 @@
         ';
     }
     else {
-        echo '<p>Was möchten Sie tun?';
-        include 'model/menu.php';
+
     }
     include 'view/footer.php';

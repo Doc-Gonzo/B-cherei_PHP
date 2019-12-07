@@ -49,16 +49,7 @@ function add_kunde($vn_kunde, $nn_kunde,$tel_kunde ){
 
     if (checkName($VornameStripped) AND checkName($NachnameStripped)) {
 
-        $sqleintrag = "
-                          INSERT INTO kunde
-                          ( 
-                          vnKunde,nnKunde,telKunde
-                          ) 
-                          VALUES
-                          (
-                          '$VornameStripped', '$NachnameStripped','$tel_kunde'
-                          )
-                        ";
+        $sqleintrag = " CALL add_kunde('$VornameStripped','$NachnameStripped','$tel_kunde'); ";
 
         if ( mysqli_query($db_link, $sqleintrag)) {
             echo "New record created successfully";
@@ -69,6 +60,10 @@ function add_kunde($vn_kunde, $nn_kunde,$tel_kunde ){
     } else {
         echo '</br> Ihre Angaben entsprechen nicht dem Standard';
     }
+
+
+    $db_link->multi_query("CALL add_Kunde($VornameStripped,$NachnameStripped,$tel_kunde)");
+
     $db_link->close();
 
 }

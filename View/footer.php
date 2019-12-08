@@ -8,7 +8,7 @@
         </div>      
        ';
 
-    include model/rent_list.php;
+    include "model/rent_list.php";
 
     echo'
        </body>

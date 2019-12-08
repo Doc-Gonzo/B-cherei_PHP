@@ -175,13 +175,18 @@ function rent_list(){
         echo 'NOT CONNECTED';
     }
 
-     $sqleintrag = " SELECT idBuch,titelBuch FROM buch JOIN verleihvorgang WHERE  datumRückgabe == NULL";
+     $sqleintrag = " SELECT idBuch,titelBuch From verleihvorgang JOIN buch ON buch.idBuch = verleihvorgang.buchIDVerleihgvorgang  WHERE datumRueckgabe IS NULL ";
 
-    if (mysqli_query($db_link, $sqleintrag)) {
+    if ($result = $db_link->query($sqleintrag)) {
+
+        /* fetch object array */
+        while ($row = $result->fetch_row()) {
+            echo  '<span class="book_id">' . $row[0] . '</span> ' . '<span class="book_title">' . $row[1] . '</span>' . ' </br>';
+        }
 
     }
-    else {
-        echo "Anfrage fehlgeschlagen: " . mysqli_error($db_link);
-    }
+
+
+
     $db_link->close();
 }

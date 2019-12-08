@@ -15,8 +15,8 @@ function logout(){
 function checkLogin(){
     if(($_COOKIE['logged_in'] == "false")) {
        echo '<script> location.replace("index.php")</script>';
+       exit();
     }
-    else {echo 'Cookie Right';}
 }
 function checkName($givenName)
 {
@@ -39,9 +39,6 @@ function add_kunde($vn_kunde, $nn_kunde,$tel_kunde ){
     if (!$db_link) {
         echo 'NOT CONNECTED';
     }
-    else {
-        echo 'CONNECTED!';
-    }
 
     // Daten zum Speichern in der Datenbank vorbereiten:
     $VornameStripped = stripslashes($vn_kunde);
@@ -52,7 +49,7 @@ function add_kunde($vn_kunde, $nn_kunde,$tel_kunde ){
         $sqleintrag = " CALL add_kunde('$VornameStripped','$NachnameStripped','$tel_kunde'); ";
 
         if ( mysqli_query($db_link, $sqleintrag)) {
-            echo "New record created successfully";
+            echo "Kunde erfolgreich angelegt.";
         }
         else {
             echo "Anfrage fehlgeschlagen: " . mysqli_error($db_link);
@@ -61,8 +58,38 @@ function add_kunde($vn_kunde, $nn_kunde,$tel_kunde ){
         echo '</br> Ihre Angaben entsprechen nicht dem Standard';
     }
 
+    $db_link->close();
 
-    $db_link->multi_query("CALL add_Kunde($VornameStripped,$NachnameStripped,$tel_kunde)");
+}
+
+function add_Mitarbeiter($vn_mitarbeiter, $nn_mitarbeiter,$tel_mitarbeiter,$zweigst_mitarbeiter ){
+$db_link = new mysqli (
+    '127.0.0.1',
+    'root',
+    '',
+    'buch'
+);
+    if (!$db_link) {
+        echo 'NOT CONNECTED';
+    }
+
+    // Daten zum Speichern in der Datenbank vorbereiten:
+    $VornameStripped = stripslashes($vn_mitarbeiter);
+    $NachnameStripped = stripslashes($nn_mitarbeiter);
+
+    if (checkName($VornameStripped) AND checkName($NachnameStripped)) {
+
+        $sqleintrag = " CALL add_mitarbeiter('$VornameStripped','$NachnameStripped','$tel_mitarbeiter','$zweigst_mitarbeiter'); ";
+
+        if (mysqli_query($db_link, $sqleintrag)) {
+            echo "Mitarbeiter erfolgreich angelegt.";
+        }
+        else {
+            echo "Anfrage fehlgeschlagen: " . mysqli_error($db_link);
+        }
+    } else {
+        echo '</br> Ihre Angaben entsprechen nicht dem Standard';
+    }
 
     $db_link->close();
 

@@ -4,12 +4,13 @@
 
     echo '<h2>Willkommen</h2>';
 
-    if(($_COOKIE['logged_in'] == 'false')) {
-        echo'
+if (ISSET ($_COOKIE['logged_in'] )) {
+    if (($_COOKIE['logged_in'] == 'false')) {
+        echo '
             <p>Bitte loggen Sie sich ein, um fortfahren zu können.</p>
         ';
-    }
-    else {
+    } else {
 
     }
+}
     include 'view/footer.php';

@@ -6,7 +6,11 @@
             <div class="clear"></div>           
         </div>
         </div>      
-       
+       ';
+
+    include model/rent_list.php;
+
+    echo'
        </body>
         
        </html>

@@ -140,3 +140,48 @@ function rent_Buch($id_buch, $id_kunde,$datum ){
     }
     $db_link->close();
 }
+
+function return_Buch($id_verleihvorgang){
+    $db_link = new mysqli (
+        '127.0.0.1',
+        'root',
+        '',
+        'buch'
+    );
+    if (!$db_link) {
+        echo 'NOT CONNECTED';
+    }
+
+    $today  =date("Y/m/d") ;
+
+    $sqleintrag = " CALL return_Buch('$id_verleihvorgang','$today'); ";
+
+    if (mysqli_query($db_link, $sqleintrag)) {
+        echo "Buch erfolgreich retourniert.";
+    }
+    else {
+        echo "Anfrage fehlgeschlagen: " . mysqli_error($db_link);
+    }
+    $db_link->close();
+}
+function rent_list(){
+    $db_link = new mysqli (
+        '127.0.0.1',
+        'root',
+        '',
+        'buch'
+    );
+    if (!$db_link) {
+        echo 'NOT CONNECTED';
+    }
+
+     $sqleintrag = " SELECT idBuch,titelBuch FROM buch JOIN verleihvorgang WHERE  datumRückgabe == NULL";
+
+    if (mysqli_query($db_link, $sqleintrag)) {
+
+    }
+    else {
+        echo "Anfrage fehlgeschlagen: " . mysqli_error($db_link);
+    }
+    $db_link->close();
+}

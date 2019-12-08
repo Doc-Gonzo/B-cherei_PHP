@@ -94,3 +94,24 @@ $db_link = new mysqli (
     $db_link->close();
 
 }
+
+function add_Buch($isbn_buch, $titel_buch,$author_buch,$cat_buch,$preis_buch,$verlag_buch,$zweigst_buch ){
+    $db_link = new mysqli (
+        '127.0.0.1',
+        'root',
+        '',
+        'buch'
+    );
+    if (!$db_link) {
+        echo 'NOT CONNECTED';
+    }
+        $sqleintrag = " CALL add_buch('$isbn_buch','$titel_buch','$author_buch','$cat_buch','$preis_buch','$verlag_buch','$zweigst_buch'); ";
+
+        if (mysqli_query($db_link, $sqleintrag)) {
+            echo "Buch erfolgreich angelegt.";
+        }
+        else {
+            echo "Anfrage fehlgeschlagen: " . mysqli_error($db_link);
+        }
+    $db_link->close();
+}

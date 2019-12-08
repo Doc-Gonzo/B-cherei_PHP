@@ -115,3 +115,28 @@ function add_Buch($isbn_buch, $titel_buch,$author_buch,$cat_buch,$preis_buch,$ve
         }
     $db_link->close();
 }
+function rent_Buch($id_buch, $id_kunde,$datum ){
+    $db_link = new mysqli (
+        '127.0.0.1',
+        'root',
+        '',
+        'buch'
+    );
+    if (!$db_link) {
+        echo 'NOT CONNECTED';
+    }
+    else {
+        echo 'CONNECTED';
+    }
+    $today  =date("Y/m/d") ;
+
+    $sqleintrag = " CALL add_Verleihvorgang('$id_buch','$id_kunde','$datum','$today'); ";
+
+    if (mysqli_query($db_link, $sqleintrag)) {
+        echo "Buch erfolgreich angelegt.";
+    }
+    else {
+        echo "Anfrage fehlgeschlagen: " . mysqli_error($db_link);
+    }
+    $db_link->close();
+}

@@ -1,7 +1,5 @@
 <?php
 
-use function Sodium\add;
-
 function checkPasswords($pass1, $pass2){
     if ($pass1 == $pass2){
         return true;
@@ -10,14 +8,23 @@ function checkPasswords($pass1, $pass2){
         return false;
     }
 };
-function setSession($sess_user,$sess_pass){
-    // Getting submitted user data from database
-    $db_link = new mysqli   (
+function getDBLink(){
+    $db_link = new mysqli (
         '127.0.0.1',
         'root',
         '',
         'buch'
     );
+    if (!$db_link) {
+        echo 'NOT CONNECTED';
+    }
+    else {
+        return $db_link;
+    }
+}
+function setSession($sess_user,$sess_pass){
+    // Getting submitted user data from database
+    $db_link =  getDBLink();
     $stmt = $db_link->prepare("SELECT * FROM mitarbeiter WHERE idMitarbeiter = ?");
     $stmt->bind_param('s', $sess_user);
     $stmt->execute();
@@ -41,10 +48,7 @@ function logout(){
     echo '<script> location.replace("index.php")</script>';
 };
 function checkLogin(){
-    if(($_COOKIE['logged_in'] == "false")) {
-       echo '<script> location.replace("index.php")</script>';
-       exit();
-    }
+
 }
 function hash_password_argoni($pass_unhased) {
     $pass_hashed = 'Argon2i hash: ' . password_hash($pass_unhased, PASSWORD_ARGON2I);
@@ -63,15 +67,7 @@ function checkName($givenName)
     }
 };
 function add_kunde($vn_kunde, $nn_kunde,$tel_kunde ){
-    $db_link = new mysqli (
-        '127.0.0.1',
-        'root',
-        '',
-        'buch'
-    );
-    if (!$db_link) {
-        echo 'NOT CONNECTED';
-    }
+    $db_link =  getDBLink();
 
     // Daten zum Speichern in der Datenbank vorbereiten:
     $VornameStripped = stripslashes($vn_kunde);
@@ -90,22 +86,11 @@ function add_kunde($vn_kunde, $nn_kunde,$tel_kunde ){
     } else {
         echo '</br> Ihre Angaben entsprechen nicht dem Standard';
     }
-
     $db_link->close();
-
 }
 
 function add_Mitarbeiter($vn_mitarbeiter, $nn_mitarbeiter,$tel_mitarbeiter,$zweigst_mitarbeiter ){
-$db_link = new mysqli (
-    '127.0.0.1',
-    'root',
-    '',
-    'buch'
-);
-    if (!$db_link) {
-        echo 'NOT CONNECTED';
-    }
-
+    $db_link =  getDBLink();
     // Daten zum Speichern in der Datenbank vorbereiten:
     $VornameStripped = stripslashes($vn_mitarbeiter);
     $NachnameStripped = stripslashes($nn_mitarbeiter);
@@ -123,21 +108,12 @@ $db_link = new mysqli (
     } else {
         echo '</br> Ihre Angaben entsprechen nicht dem Standard';
     }
-
     $db_link->close();
 
 }
 
 function add_Buch($isbn_buch, $titel_buch,$author_buch,$cat_buch,$preis_buch,$verlag_buch,$zweigst_buch ){
-    $db_link = new mysqli (
-        '127.0.0.1',
-        'root',
-        '',
-        'buch'
-    );
-    if (!$db_link) {
-        echo 'NOT CONNECTED';
-    }
+        $db_link =  getDBLink();
         $sqleintrag = " CALL add_buch('$isbn_buch','$titel_buch','$author_buch','$cat_buch','$preis_buch','$verlag_buch','$zweigst_buch'); ";
 
         if (mysqli_query($db_link, $sqleintrag)) {
@@ -149,18 +125,8 @@ function add_Buch($isbn_buch, $titel_buch,$author_buch,$cat_buch,$preis_buch,$ve
     $db_link->close();
 }
 function rent_Buch($id_buch, $id_kunde,$datum ){
-    $db_link = new mysqli (
-        '127.0.0.1',
-        'root',
-        '',
-        'buch'
-    );
-    if (!$db_link) {
-        echo 'NOT CONNECTED';
-    }
-    else {
-        echo 'CONNECTED';
-    }
+    $db_link =  getDBLink();
+
     $today  =date("Y/m/d") ;
 
     $sqleintrag = " CALL add_Verleihvorgang('$id_buch','$id_kunde','$datum','$today'); ";
@@ -173,18 +139,8 @@ function rent_Buch($id_buch, $id_kunde,$datum ){
     }
     $db_link->close();
 }
-
 function return_Buch($id_verleihvorgang){
-    $db_link = new mysqli (
-        '127.0.0.1',
-        'root',
-        '',
-        'buch'
-    );
-    if (!$db_link) {
-        echo 'NOT CONNECTED';
-    }
-
+    $db_link =  getDBLink();
     $today  =date("Y/m/d") ;
 
     $sqleintrag = " CALL return_Buch('$id_verleihvorgang','$today'); ";
@@ -198,15 +154,7 @@ function return_Buch($id_verleihvorgang){
     $db_link->close();
 }
 function rent_list(){
-    $db_link = new mysqli (
-        '127.0.0.1',
-        'root',
-        '',
-        'buch'
-    );
-    if (!$db_link) {
-        echo 'NOT CONNECTED';
-    }
+    $db_link =  getDBLink();
      $sqleintrag = " SELECT idBuch,titelBuch,idVerleihvorgang From verleihvorgang JOIN buch ON buch.idBuch = verleihvorgang.buchIDVerleihgvorgang  WHERE datumRueckgabe IS NULL ";
 
     if ($result = $db_link->query($sqleintrag)) {
@@ -221,15 +169,8 @@ function rent_list(){
     $db_link->close();
 }
 function stock_list(){
-    $db_link = new mysqli (
-        '127.0.0.1',
-        'root',
-        '',
-        'buch'
-    );
-    if (!$db_link) {
-        echo 'NOT CONNECTED';
-    }
+    $db_link =  getDBLink();
+
     $sqleintrag = " SELECT idBuch,titelBuch From verleihvorgang JOIN buch ON buch.idBuch = verleihvorgang.buchIDVerleihgvorgang  WHERE datumRueckgabe IS NOT NULL ";
 
     if ($result = $db_link->query($sqleintrag)) {

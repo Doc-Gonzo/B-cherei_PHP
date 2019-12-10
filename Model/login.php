@@ -2,8 +2,8 @@
 
 
 if ( ! empty( $_POST ) ) {
-    if (isset($_POST['username']) && isset($_POST['password'])) {
-        $sess_user = $_POST['username'];
+    if (isset($_POST['userID']) && isset($_POST['password'])) {
+        $sess_user = $_POST['userID'];
         $sess_pass = $_POST['password'];
 
         setSession($sess_user,$sess_pass);
@@ -26,7 +26,7 @@ if ( !isset( $_SESSION['user_id'] ) ) {
     echo '
     <div class="loginbox">
         <form action="" method="post">
-            <input type="text" name="username" placeholder="Benutzer-ID">
+            <input type="text" name="userID" placeholder="Benutzer-ID">
             <input type="text" name="password" placeholder="Passwort">
             <input type="submit" value="Einloggen"> 
         </form>

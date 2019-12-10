@@ -9,6 +9,7 @@
        ';
 
     include "model/rent_list.php";
+    include "model/stock_list.php";
 
     echo'
        </body>

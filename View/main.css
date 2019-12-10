@@ -91,3 +91,41 @@ h3 {
     right: 20px;
     top: 20px;
 }
+.verleih_id{
+    text-align: right;
+    padding-left: 15px
+}
+.rent_list_box {
+    background-color: #fff;
+    max-height: 50px;
+    overflow-y: scroll;
+    padding: 5px;
+}
+.stock_list {
+    max-width: 300px;
+    box-sizing: border-box;
+    background-color: rgba(240, 248, 255,.97);
+    padding: 20px;
+    border: 1px solid grey;
+    position: absolute;
+    left: 20px;
+    top: 20px;
+}
+.stock_list_box {
+     background-color: rgba(255,255,255,.8);
+     max-height: 150px;
+     overflow-y: scroll;
+     padding: 5px;
+ }
+.stock_list .book_id{
+    text-align: right;
+    padding-left: 30px
+}
+.stock_list_row {
+    border-bottom: 1px solid gray;
+    padding-bottom: 3px;
+}
+.stock_list_row .book_title {
+    width: 112px;
+    display: inline-block;
+}

@@ -1,5 +1,8 @@
 <?php
-function checkPasswords($pass1,$pass2){
+
+use function Sodium\add;
+
+function checkPasswords($pass1, $pass2){
     if ($pass1 == $pass2){
         return true;
     }
@@ -7,10 +10,6 @@ function checkPasswords($pass1,$pass2){
         return false;
     }
 };
-function hash_password($pass_unhased) {
-    $pass_hashed = 'Argon2i hash: ' . password_hash($pass_unhased, PASSWORD_ARGON2I);
-    return $pass_hashed;
-}
 function setSession($sess_user,$sess_pass){
     // Getting submitted user data from database
     $db_link = new mysqli   (
@@ -24,15 +23,17 @@ function setSession($sess_user,$sess_pass){
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_object();
-    var_dump($sess_pass, $user->pwMitarbeiter );
-    if( password_verify( $sess_pass, $user->pwMitarbeiter ) ) {
+    var_dump($user );
+    ECHO   '</br></br> ';
+    $stored_pw = $user->pwMitarbeiter;
+    if (password_verify($sess_pass,$stored_pw) ) {
+
         ECHO 'VERIFIED';
         $_SESSION['user_id'] = $user->idMitarbeiter;
-
     }
     else {
         ECHO 'PW : ' .  $user->pwMitarbeiter ;
-     ECHO   'NOT VERIFIED';
+     ECHO   '</br></br> NOT VERIFIED';
     }
 };
 function logout(){
@@ -206,15 +207,46 @@ function rent_list(){
     if (!$db_link) {
         echo 'NOT CONNECTED';
     }
-     $sqleintrag = " SELECT idBuch,titelBuch From verleihvorgang JOIN buch ON buch.idBuch = verleihvorgang.buchIDVerleihgvorgang  WHERE datumRueckgabe IS NULL ";
+     $sqleintrag = " SELECT idBuch,titelBuch,idVerleihvorgang From verleihvorgang JOIN buch ON buch.idBuch = verleihvorgang.buchIDVerleihgvorgang  WHERE datumRueckgabe IS NULL ";
 
     if ($result = $db_link->query($sqleintrag)) {
 
         /* fetch object array */
         while ($row = $result->fetch_row()) {
-            echo  '<span class="book_id">' . $row[0] . '</span> ' . '<span class="book_title">' . $row[1] . '</span>' . ' </br>';
+            $short_string = substr($row[1] , 0, 10);
+            echo  '<span class="book_id">' . $row[0] . '</span> ' . '<span class="book_title">' . $short_string . '</span>'.'<span class="verleih_id">' . $row[2] . '</span>' . ' </br>';
         }
 
+    }
+    $db_link->close();
+}
+function stock_list(){
+    $db_link = new mysqli (
+        '127.0.0.1',
+        'root',
+        '',
+        'buch'
+    );
+    if (!$db_link) {
+        echo 'NOT CONNECTED';
+    }
+    $sqleintrag = " SELECT idBuch,titelBuch From verleihvorgang JOIN buch ON buch.idBuch = verleihvorgang.buchIDVerleihgvorgang  WHERE datumRueckgabe IS NOT NULL ";
+
+    if ($result = $db_link->query($sqleintrag)) {
+        $books = array();
+        /* fetch object array */
+        while ($row = $result->fetch_row()) {
+            $short_string = substr($row[1], 0, 10);
+            $book = '<div class="stock_list_row"><span class="book_title">' . $short_string . '</span>' . '<span class="book_id">' . $row[0] . '</span> </div>';
+            // Pruefe ob keine Duplikate
+            if (!in_array($book, $books, true)) {
+                array_push($books, $book);
+            }
+        }
+        sort($books);
+        foreach ($books as &$value) {
+            print_r($value);
+        }
     }
     $db_link->close();
 }

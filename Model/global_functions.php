@@ -1,16 +1,43 @@
 <?php
+function checkPasswords($pass1,$pass2){
+    if ($pass1 == $pass2){
+        return true;
+    }
+    else {
+        return false;
+    }
+};
+function hash_password($pass_unhased) {
+    $pass_hashed = 'Argon2i hash: ' . password_hash($pass_unhased, PASSWORD_ARGON2I);
+    return $pass_hashed;
+}
+function setSession($sess_user,$sess_pass){
+    // Getting submitted user data from database
+    $db_link = new mysqli   (
+        '127.0.0.1',
+        'root',
+        '',
+        'buch'
+    );
+    $stmt = $db_link->prepare("SELECT * FROM mitarbeiter WHERE idMitarbeiter = ?");
+    $stmt->bind_param('s', $sess_user);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_object();
+    var_dump($sess_pass, $user->pwMitarbeiter );
+    if( password_verify( $sess_pass, $user->pwMitarbeiter ) ) {
+        ECHO 'VERIFIED';
+        $_SESSION['user_id'] = $user->idMitarbeiter;
 
-function setLoginCookieUserId($user_id){
-        setcookie("logged_in", "true");
-        setcookie("logged_in_user", $user_id);
-    };
-function setLoginCookie(){
-    setcookie("logged_in", "true");
+    }
+    else {
+        ECHO 'PW : ' .  $user->pwMitarbeiter ;
+     ECHO   'NOT VERIFIED';
+    }
 };
 function logout(){
-    setcookie("logged_in", "false");
-    setcookie("logged_in_user", "JohnDoe");
-     header("index.php");
+    session_destroy();
+    echo '<script> location.replace("index.php")</script>';
 };
 function checkLogin(){
     if(($_COOKIE['logged_in'] == "false")) {
@@ -18,6 +45,11 @@ function checkLogin(){
        exit();
     }
 }
+function hash_password_argoni($pass_unhased) {
+    $pass_hashed = 'Argon2i hash: ' . password_hash($pass_unhased, PASSWORD_ARGON2I);
+    return $pass_hashed;
+}
+
 function checkName($givenName)
 {
     $nameString = trim($givenName);
@@ -174,7 +206,6 @@ function rent_list(){
     if (!$db_link) {
         echo 'NOT CONNECTED';
     }
-
      $sqleintrag = " SELECT idBuch,titelBuch From verleihvorgang JOIN buch ON buch.idBuch = verleihvorgang.buchIDVerleihgvorgang  WHERE datumRueckgabe IS NULL ";
 
     if ($result = $db_link->query($sqleintrag)) {
@@ -185,8 +216,5 @@ function rent_list(){
         }
 
     }
-
-
-
     $db_link->close();
 }

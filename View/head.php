@@ -1,5 +1,5 @@
 <?php
-
+session_start();
     require_once "model/global_functions.php";
     echo '
         <html>

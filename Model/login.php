@@ -6,10 +6,9 @@ if ( ! empty( $_POST ) ) {
         $sess_user = $_POST['userID'];
         $sess_pass = $_POST['password'];
 
-        setSession($sess_user,$sess_pass);
+        setSessionRaw($sess_user,$sess_pass);
     }
 }
-
 
 if( isset($_POST['hidden_logout']) )
 {

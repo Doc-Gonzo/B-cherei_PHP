@@ -40,6 +40,7 @@ body {
 input[type="text"] {
     padding-left: 5px;
     font-size: 16px;
+    margin-bottom: 5px;
 }
 .footer {
     min-height: 50px;
@@ -128,4 +129,37 @@ h3 {
 .stock_list_row .book_title {
     width: 112px;
     display: inline-block;
+}
+.stock_list_row .book_title a {
+    text-decoration: none;
+    color: black;
+}
+.book_detail_table {
+    margin-top: 25px;
+    background-color: rgba(255,255,255,.8);
+    padding: 25px;
+    box-sizing: border-box;
+    width: 100%;
+}
+.buch_detail_wrapper {
+    float: left;
+    width: 600px;
+}
+.buch_Detail_form_container {
+    margin-top: 25px;
+    float: left;
+    margin-left: 25px;
+    width: 300px;
+}
+.buch_Detail_form h3 {
+    margin-bottom: 0;
+}
+.book_detail_table tr td:first-child {
+    font-weight: bold;
+}
+.book_detail_table tr {
+border-bottom: 1px solid grey;
+}
+.loginarea {
+    background-color: rgba(255,255,255,0.8) !important;
 }

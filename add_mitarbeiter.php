@@ -1,5 +1,6 @@
 <?php
 include "view/head.php";
+checkLogin();
 
 if( isset($_POST['pw1_mitarbeiter']) AND isset ($_POST['pw2_mitarbeiter'])){
     if( checkPasswords($_POST['pw1_mitarbeiter'],$_POST['pw2_mitarbeiter'])){

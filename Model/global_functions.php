@@ -42,7 +42,8 @@ function setSession($sess_user,$sess_pass){
         $_SESSION['user_id'] = $user->idMitarbeiter;
     }
     else {
-        ECHO   '</br></br> NOT VERIFIED';
+        ECHO   '</br></br> <img src="View/img/harkan.jpg" title="Kummshiernetrein">  ';
+
     }
     $db_link->close();
 }
@@ -56,15 +57,17 @@ function setSessionRaw($sess_user,$sess_pass){
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_object();
-    ECHO   '</br></br> ';
-    $stored_pw = $user->pwMitarbeiterRaw;
-    if ($stored_pw ==$sess_pass) {
-        ECHO 'VERIFIED';
-        $_SESSION['user_id'] = $user->idMitarbeiter;
+    if($user) {
+        $stored_pw = $user->pwMitarbeiterRaw;
+        if ($stored_pw == $sess_pass) {
+            $_SESSION['user_id'] = $user->idMitarbeiter;
+        } else {
+            // ECHO '</br></br><img src="View/img/harkan.jpg" title="Kummshiernetrein"> ';
+            ECHO'<iframe width="500" height="300" src="https://www.youtube.com/embed/-gu--dQOgzI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+
+        }
     }
-    else {
-        ECHO   '</br></br> NOT VERIFIED';
-    }
+    ELSE {ECHO'Keine Daten Übergeben. Bitte füllen Sie beide Felder aus';}
     $db_link->close();
 }
 
@@ -74,7 +77,12 @@ function logout(){
     echo '<script> location.replace("index.php")</script>';
 };
 function checkLogin(){
-
+    if ( !isset( $_SESSION['user_id'] ) ){
+        echo '<script> location.replace("index.php")</script>';
+        ECHO 'Sie müssen sich einloggen um fortzufahren.';
+        // Falls JS deaktiviert, wird Contentausgabe mit exit verhindert
+        exit();
+    }
 }
 function hash_password_argoni($pass_unhashed) {
     $pass_hashed = password_hash('$pass_unhashed', 3);
@@ -152,19 +160,33 @@ function add_Buch($isbn_buch, $titel_buch,$author_buch,$cat_buch,$preis_buch,$ve
     $db_link->close();
 }
 function rent_Buch($id_buch, $id_kunde,$datum ){
-    $db_link =  getDBLink();
+    if( $id_kunde !== "" && $id_buch !=="" && $datum !== "0000-00-00" ) {
+        $db_link = getDBLink();
 
-    $today  =date("Y/m/d") ;
+        $today = date("Y/m/d");
 
-    $sqleintrag = " CALL add_Verleihvorgang('$id_buch','$id_kunde','$datum','$today'); ";
+        $sqleintrag = " CALL add_Verleihvorgang('$id_buch','$id_kunde','$datum','$today'); ";
 
-    if (mysqli_query($db_link, $sqleintrag)) {
-        echo "Buch erfolgreich angelegt.";
+        if (mysqli_query($db_link, $sqleintrag)) {
+            echo "Buch erfolgreich angelegt.";
+        } else {
+            echo "Anfrage fehlgeschlagen: " . mysqli_error($db_link);
+        }
+        $db_link->close();
     }
-    else {
-        echo "Anfrage fehlgeschlagen: " . mysqli_error($db_link);
-    }
-    $db_link->close();
+    else{ECHO'Bitte füllen Sie alle Felder aus';}
+}
+function rent_buch_form_maker($buch_id){
+    echo '
+    <form class="rent_buch" action="rent_buch.php" method="post">
+        <input type="text" name="id_buch" value="' . $buch_id. '">
+        <input type="text" name="id_kunde" placeholder="Kunde ID">
+        <label for="date">Rückgabedatum:</label>
+        <input type="date" name="datum">                       
+        <input type="submit" value="Bestätigen">        
+    </form>
+';
+
 }
 function return_Buch($id_verleihvorgang){
     $db_link =  getDBLink();
@@ -193,6 +215,20 @@ function rent_list(){
         }
     }
     $db_link->close();
+}
+function check_if_rent($book_id){
+    $db_link =  getDBLink();
+    $sqleintrag = " SELECT idVerleihvorgang From verleihvorgang WHERE idVerleihvorgang = $book_id AND datumRueckgabe IS NULL ";
+
+    if ($result = $db_link->query($sqleintrag)) {
+        $db_link->close();
+        return true;
+    }
+    else{
+        $db_link->close();
+        return false;
+    }
+
 }
 function stock_list(){
     $db_link =  getDBLink();

@@ -15,12 +15,6 @@ if( isset($_POST['hidden_logout']) )
     logout();
 }
 
-if ( isset( $_SESSION['user_id'] ) ) {
-    ECHO 'SESSION GESETZT!!';
-}
-else {
-    echo 'Keine Session';
-};
 if ( !isset( $_SESSION['user_id'] ) ) {
     echo '
     <div class="loginbox">

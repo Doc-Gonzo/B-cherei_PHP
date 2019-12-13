@@ -4,13 +4,11 @@
 
     echo '<h2>Willkommen</h2>';
 
-if (ISSET ($_COOKIE['logged_in'] )) {
-    if (($_COOKIE['logged_in'] == 'false')) {
-        echo '
-            <p>Bitte loggen Sie sich ein, um fortfahren zu können.</p>
+    if ( !isset( $_SESSION['user_id'] ) ) {
+        echo '<p>Bitte loggen Sie sich ein, um das System zu verwenden;</p>
         ';
-    } else {
-
     }
-}
+    else {
+            echo'<p class="italic">Ein Buch ist ein Spiegel, wenn ein Affe hineinsieht, so kann kein Genie herausgucken.</p>';
+    }
     include 'view/footer.php';

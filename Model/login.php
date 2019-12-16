@@ -1,6 +1,5 @@
 <?php
 
-
 if ( ! empty( $_POST ) ) {
     if (isset($_POST['userID']) && isset($_POST['password'])) {
         $sess_user = $_POST['userID'];
@@ -20,7 +19,7 @@ if ( !isset( $_SESSION['user_id'] ) ) {
     <div class="loginbox">
         <form action="" method="post">
             <input type="text" name="userID" placeholder="Benutzer-ID">
-            <input type="text" name="password" placeholder="Passwort">
+            <input type="password" name="password" placeholder="Passwort">
             <input type="submit" value="Einloggen"> 
         </form>
     <div>

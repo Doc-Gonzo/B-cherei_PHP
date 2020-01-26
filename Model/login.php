@@ -5,7 +5,7 @@ if ( ! empty( $_POST ) ) {
         $sess_user = $_POST['userID'];
         $sess_pass = $_POST['password'];
 
-       setSessionRaw($sess_user,$sess_pass);
+       setSession($sess_user,$sess_pass);
        /* setSession($sess_user,$sess_pass); */
     }
 }

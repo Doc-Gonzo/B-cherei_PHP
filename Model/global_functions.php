@@ -32,23 +32,10 @@ function setSession($sess_user,$sess_pass){
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_object();
-    var_dump($user );
-    ECHO   '</br></br> ';
-    $stored_pw = $user->pwMitarbeiter;
-    ECHO   '</br></br> Uebermitteltes PW:  ' . $sess_pass;
-        ECHO   '</br></br> Uebermitteltes PW Hashed:  ' . hash_password_argoni($sess_pass);
-        ECHO   '</br></br> Stored PW DB: '. $stored_pw;
-/*
-    if (password_verify("$sess_pass","$stored_pw")) {
-        ECHO 'VERIFIED';
-        $_SESSION['user_id'] = $user->idMitarbeiter;
-    }
-*/
     // Verify user password and set $_SESSION
-    if ( password_verify( $_POST['password'], $user->pwMitarbeiter ) ) {
+    if ( $user->pwMitarbeiter  = hash_password_argoni('$sess_pass') ) {
         $_SESSION['user_id'] = $user->idMitarbeiter;
     }
-
 
     else {
         ECHO   '</br></br> <img src="View/img/harkan.jpg" title="Kummshiernetrein">  ';
@@ -56,31 +43,6 @@ function setSession($sess_user,$sess_pass){
     }
     $db_link->close();
 }
-
-
-function setSessionRaw($sess_user,$sess_pass){
-    // Getting submitted user data from database
-    $db_link =  getDBLink();
-    $stmt = $db_link->prepare("SELECT * FROM mitarbeiter WHERE idMitarbeiter = ?");
-    $stmt->bind_param('s', $sess_user);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_object();
-    if($user) {
-        $stored_pw = $user->pwMitarbeiterRaw;
-        if ($stored_pw == $sess_pass) {
-            $_SESSION['user_id'] = $user->idMitarbeiter;
-        } else {
-            // ECHO '</br></br><img src="View/img/harkan.jpg" title="Kummshiernetrein"> ';
-            ECHO'<iframe width="500" height="300" src="https://www.youtube.com/embed/-gu--dQOgzI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-
-        }
-    }
-    ELSE {ECHO'Keine Daten Übergeben. Bitte füllen Sie beide Felder aus';}
-    $db_link->close();
-}
-
-
 function logout(){
     session_destroy();
     echo '<script> location.replace("index.php")</script>';
@@ -249,7 +211,7 @@ function stock_list(){
         /* fetch object and push to array */
         while ($row = $result->fetch_row()) {
             $short_string = substr($row[0], 0, 10);
-            $book = '<div class="stock_list_row"><span class="book_title"><a title="' . $row[0] . '" href="buch_detail.php?buch_id=' . $row[1] . '" >' . $short_string . '</a></span>' . '<span class="book_id">' . $row[1] . '</span> </div>';
+            $book = '<div class="stock_list_row"><span class="book_title"><a title="' . $row[0] . '" href="buch_detail_object.php?buch_id=' . $row[1] . '" >' . $short_string . '</a></span>' . '<span class="book_id">' . $row[1] . '</span> </div>';
             // Pruefe ob keine Duplikate
             if (!in_array($book, $books, true)) {
                 array_push($books, $book);

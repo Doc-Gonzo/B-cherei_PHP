@@ -1,4 +1,6 @@
 <?php
+include "Buch.php";
+
 
 function checkPasswords($pass1, $pass2){
     if ($pass1 == $pass2){
@@ -36,11 +38,18 @@ function setSession($sess_user,$sess_pass){
     ECHO   '</br></br> Uebermitteltes PW:  ' . $sess_pass;
         ECHO   '</br></br> Uebermitteltes PW Hashed:  ' . hash_password_argoni($sess_pass);
         ECHO   '</br></br> Stored PW DB: '. $stored_pw;
-
+/*
     if (password_verify("$sess_pass","$stored_pw")) {
         ECHO 'VERIFIED';
         $_SESSION['user_id'] = $user->idMitarbeiter;
     }
+*/
+    // Verify user password and set $_SESSION
+    if ( password_verify( $_POST['password'], $user->pwMitarbeiter ) ) {
+        $_SESSION['user_id'] = $user->idMitarbeiter;
+    }
+
+
     else {
         ECHO   '</br></br> <img src="View/img/harkan.jpg" title="Kummshiernetrein">  ';
 
@@ -264,6 +273,23 @@ function buch_detail($buch_id){
         $row = $result->fetch_row();
             buch_detail_make_table($row[2],$row[3],$row[4],$row[6],$row[5],$row[1]);
         }
+    else {
+        ECHO 'Kein Ergebnis unter dieser Buch-ID';
+    };
+    $db_link->close();
+}
+/* Objekt Orientiert */
+function buch_makeObject($buch_id){
+    $db_link =  getDBLink();
+
+    $sqleintrag = " SELECT * From buch WHERE idBuch = $buch_id ";
+
+    if ($result = $db_link->query($sqleintrag)) {
+        $row = $result->fetch_row();
+        $buch = new Buch($row[0],$row[1],$row[2],$row[3],$row[4],$row[5],$row[6],$row[7]);
+        $buch->print_book_table();
+
+    }
     else {
         ECHO 'Kein Ergebnis unter dieser Buch-ID';
     };
